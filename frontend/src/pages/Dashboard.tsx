@@ -8,7 +8,7 @@ const Dashboard = () => {
     const [selectedCandidate, setSelectedCandidate] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const candidates = ['Candidate A', 'Candidate B', 'Candidate C'];
+    const candidates = ['Candidate A', 'Candidate B'];
 
     const handleVote = async () => {
         if (!selectedCandidate) return;
