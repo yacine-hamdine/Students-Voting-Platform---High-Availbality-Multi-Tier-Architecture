@@ -37,12 +37,27 @@ const initDB = async () => {
         `);
 
         await connection.query(`
-            CREATE TABLE IF NOT EXISTS votes (
+            CREATE TABLE IF NOT EXISTS voters (
                 id INT AUTO_INCREMENT PRIMARY KEY,
-                candidate VARCHAR(255) NOT NULL,
+                user_id INT NOT NULL UNIQUE,
                 created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             )
         `);
+
+        await connection.query(`
+            CREATE TABLE IF NOT EXISTS candidates(
+                id INT AUTO_INCREMENT PRIMARY KEY,
+                name VARCHAR(255) NOT NULL UNIQUE,
+                vote_count INT DEFAULT 0
+            )
+            `);
+
+        // Seed candidates if they don't exist
+        await connection.query(`
+            INSERT IGNORE INTO candidates(name, vote_count) VALUES
+            ('Candidate 1', 0),
+            ('Candidate 2', 0)
+                `);
 
         console.log('Database tables initialized successfully.');
     } catch (error) {
@@ -55,5 +70,5 @@ const initDB = async () => {
 initDB();
 
 app.listen(PORT, () => {
-    console.log(`Server running on port ${PORT}`);
+    console.log(`Server running on port ${PORT} `);
 });

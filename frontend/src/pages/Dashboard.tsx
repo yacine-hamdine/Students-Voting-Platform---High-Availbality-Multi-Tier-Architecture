@@ -8,7 +8,7 @@ const Dashboard = () => {
     const [selectedCandidate, setSelectedCandidate] = useState('');
     const [loading, setLoading] = useState(false);
 
-    const candidates = ['Candidate A', 'Candidate B'];
+    const candidates = ['Candidate 1', 'Candidate 2'];
 
     const handleVote = async () => {
         if (!selectedCandidate) return;
@@ -16,9 +16,13 @@ const Dashboard = () => {
         try {
             await axiosPrivate.post('/votes', { candidate: selectedCandidate });
             navigate('/results');
-        } catch (error) {
+        } catch (error: any) {
             console.error(error);
-            alert('Failed to cast vote. ensure you are logged in.');
+            if (error.response?.status === 403) {
+                alert('You have already voted!');
+            } else {
+                alert('Failed to cast vote. Please try again.');
+            }
         } finally {
             setLoading(false);
         }
