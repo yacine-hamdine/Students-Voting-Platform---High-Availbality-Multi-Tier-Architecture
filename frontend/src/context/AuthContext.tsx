@@ -1,4 +1,4 @@
-import { createContext, useState, useContext } from 'react';
+import { createContext, useState, useEffect, useContext } from 'react';
 import type { ReactNode, Dispatch, SetStateAction } from 'react';
 import { api } from '../api/axios';
 
@@ -21,7 +21,18 @@ interface AuthContextType {
 const AuthContext = createContext<AuthContextType>({} as AuthContextType);
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
-    const [auth, setAuth] = useState<AuthState>({});
+    const [auth, setAuth] = useState<AuthState>(() => {
+        const token = localStorage.getItem('accessToken');
+        return token ? { accessToken: token } : {};
+    });
+
+    useEffect(() => {
+        if (auth.accessToken) {
+            localStorage.setItem('accessToken', auth.accessToken);
+        } else {
+            localStorage.removeItem('accessToken');
+        }
+    }, [auth.accessToken]);
 
     const logout = async () => {
         try {
